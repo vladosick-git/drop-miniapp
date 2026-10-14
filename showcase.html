@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ДРОП - все экраны</title>
+<link rel="icon" href="assets/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #161716; color: #c9c9cc; font-family: Inter, sans-serif; }
+  /* «холст» 1536x1024, как макеты GPT; на скринах масштабируется deviceScaleFactor */
+  .board { position: relative; width: 1536px; height: 1024px; margin: 0 auto; transform-origin: top left; }
+  .phone { position: absolute; top: 9px; height: 971px; border: 0; border-radius: 16px; background: #0f1213; }
+  .cap { position: absolute; top: 990px; width: 448px; text-align: center; font-size: 17.5px; color: #c4c4c6; letter-spacing: -.1px; }
+  .phone--sm { top: 128px; transform: scale(.84); transform-origin: top center; }
+  .flow-h { position: absolute; left: 0; right: 0; top: 30px; text-align: center; color: #fff; font-size: 34px; font-weight: 600; letter-spacing: -.6px; }
+  .flow-h small { display: block; font-size: 17px; font-weight: 400; color: #9c9ca1; letter-spacing: -.1px; margin-top: 8px; }
+  .browser { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; background: #fff; overflow: hidden; }
+  .board--web .browser { left: 48px; top: 62px; border-radius: 3px; }
+  .bt { height: 34px; background: #d8dfe8; display: flex; align-items: flex-end; padding-left: 12px; position: relative; }
+  .bt__dots { position: absolute; left: 13px; top: 12px; display: flex; gap: 8px; }
+  .bt__dots i { width: 12px; height: 12px; border-radius: 50%; }
+  .bt__tab { margin-left: 74px; width: 220px; height: 28px; background: #edf0f3; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 12.5px; color: #1d1d1f; }
+  .bt__tab b { width: 16px; height: 16px; border-radius: 4px; background: #1452fe; display: grid; place-items: center; }
+  .bt__tab span { flex: 1; }
+  .bt__plus { margin: 0 0 6px 12px; font-size: 20px; color: #444; line-height: 1; }
+  .ba { height: 34px; background: #edf0f3; display: flex; align-items: center; gap: 18px; padding: 0 14px; color: #555; font-size: 14px; border-bottom: 1px solid #dfe3e8; }
+  .ba__url { flex: 1; height: 26px; border-radius: 13px; background: #edf0f3; display: flex; align-items: center; gap: 10px; color: #1d1d1f; font-size: 14px; margin-left: 2px; }
+  .ba svg { width: 17px; height: 17px; flex: none; }
+  .ba__url svg { width: 14px; height: 14px; }
+  .browser iframe { width: 1440px; height: 832px; border: 0; display: block; }
+  .nav { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 6px; z-index: 5; }
+  .nav a { background: #26272a; color: #ddd; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; }
+  .nav a.on { background: #1452fe; color: #fff; }
+  .shot .nav { display: none; }
+</style>
+</head>
+<body>
+<div class="board" id="board"></div>
+<nav class="nav"><a href="?set=shop">Магазин</a><a href="?set=admin">Моб. админка</a><a href="?set=web">Веб-админка</a><a href="?set=flow">Сценарий</a><a href="index.html">Живое демо</a></nav>
+<script>
+  // ?set=shop|admin|web ; ?shot=1 - без навигации и с исходными данными;
+  // ?ref=1 - ширины телефонов как в макете GPT (429/448/428) для сверки
+  const P = new URLSearchParams(location.search);
+  const set = P.get('set') || 'shop', shot = P.has('shot'), ref = P.has('ref');
+  if (shot) document.documentElement.classList.add('shot');
+  document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('on', a.search === '?set=' + set));
+  const board = document.getElementById('board');
+  const q = shot ? 'frame=1&shot=1' : 'frame=1';
+  const sets = {
+    shop: [['#/', '1. Каталог'], ['#/product/runner', '2. Карточка товара'], ['#/cart', '3. Оформление заказа']],
+    admin: [['#/admin', '1. Сводка'], ['#/admin/orders', '2. Заказы'], ['#/admin/product/runner', '3. Редактирование товара']],
+    // сценарий покупки: 4 телефона помельче + заголовок; demo=paid - заказ #1003 уже оформлен
+    flow: [['#/product/runner', '1. Выбор размера'], ['#/cart', '2. Промокод и доставка'], ['#/done/1003', '3. Оплата', 'demo=paid&'], ['#/admin/orders', '4. Заказ уже в админке', 'demo=paid&']],
+  };
+  if (set === 'web') {
+    board.classList.add(ref ? 'board--ref' : 'board--web');
+    if (ref) { board.style.width = '1440px'; board.style.height = '900px'; }
+    board.innerHTML = `<div class="browser">
+      <div class="bt"><div class="bt__dots"><i style="background:#fe5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+        <div class="bt__tab"><b><svg viewBox="0 0 24 24" width="12" height="12"><path fill="#fff" d="M6.6 8.2c0-.5.3-.9.8-1.1L11.3 5c.4-.2.9-.2 1.3 0l4 2.1c.5.3.8.7.8 1.2v.6c0 .5-.3.9-.8 1.1L12.7 12c-.4.2-.9.2-1.3 0l-4-2.1c-.5-.3-.8-.7-.8-1.2zM6.6 13c0-.6.6-.9 1.1-.7l3.7 1.9c.4.2.9.2 1.3 0l3.6-1.9c.5-.3 1.1.1 1.1.7v1.1c0 .5-.3.9-.8 1.1L12.7 17.4c-.4.2-.9.2-1.3 0l-4-2.1c-.5-.3-.8-.7-.8-1.2z"/></svg></b><span>ДРОП - админ-панель</span><svg viewBox="0 0 24 24" width="13" height="13" stroke="#333" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></div><span class="bt__plus">+</span></div>
+      <div class="ba"><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg><div class="ba__url"><svg viewBox="0 0 24 24"><path fill="#555" d="M7 10V7.5a5 5 0 0 1 10 0V10h.6c.8 0 1.4.6 1.4 1.4v8.2c0 .8-.6 1.4-1.4 1.4H6.4c-.8 0-1.4-.6-1.4-1.4v-8.2c0-.8.6-1.4 1.4-1.4zm2 0h6V7.5a3 3 0 0 0-6 0z"/></svg>drop-store.ru/admin</div><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6L12 16.8l-5.4 2.8 1.1-6-4.5-4.2 6.1-.8z"/></svg><svg viewBox="0 0 24 24" fill="#5f6368" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5a2 2 0 0 1 4 0V5h3a1 1 0 0 1 1 1v3h-1.5a2 2 0 0 0 0 4H18v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V18H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#5f6368"/><circle cx="12" cy="9.5" r="3.2" fill="#edf0f3"/><path d="M6.3 18c1.4-2.2 3.4-3.2 5.7-3.2s4.3 1 5.7 3.2" fill="#edf0f3"/></svg><svg viewBox="0 0 24 24" fill="#5f6368"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></div>
+      <iframe src="admin.html?${shot ? 'shot=1' : ''}"></iframe></div>`;
+  } else if (set === 'flow') {
+    board.insertAdjacentHTML('beforeend', `<div class="flow-h">Заказ за минуту - и он сразу в админке<small>корзина, промокод и итог считаются вживую, заказ из Mini App появляется у продавца</small></div>`);
+    sets.flow.forEach(([hash, cap, extra], i) => {
+      const c = 192 + i * 384;
+      board.insertAdjacentHTML('beforeend', `<iframe class="phone phone--sm" style="left:${c - 214}px;width:428px" src="index.html?${extra || ''}${q}${hash}"></iframe><div class="cap" style="left:${c - 224}px;top:954px">${cap}</div>`);
+    });
+  } else {
+    // центры телефонов в макете: 284.5, 768, 1252
+    const W = ref ? [429, 448, 428] : [428, 428, 428], X = [70, 544, 1038];
+    const C = [284.5, 768, 1252];
+    sets[set].forEach(([hash, cap], i) => {
+      const x = ref ? X[i] : Math.round(C[i] - W[i] / 2);
+      board.insertAdjacentHTML('beforeend', `<iframe class="phone" style="left:${x}px;width:${W[i]}px" src="index.html?${q}${hash}"></iframe><div class="cap" style="left:${C[i] - 224}px">${cap}</div>`);
+    });
+  }
+  // в обычном браузере вписываем холст в окно
+  function fit() { if (shot) return; const w = parseFloat(board.style.width) || 1536, k = Math.min(1, innerWidth / w); board.style.transform = k < 1 ? `scale(${k})` : ''; board.style.marginLeft = k < 1 ? '0' : 'auto'; }
+  addEventListener('resize', fit); fit();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# в репозиторий идёт только сайт и скрипты
+tools/node_modules/
+tmp/
+incoming_gpt/
+ref/
+screens/
+kwork/
+ТЗ_фото_для_GPT.md

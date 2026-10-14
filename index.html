@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>ДРОП - магазин уличной одежды</title>
+<meta name="description" content="Демо Telegram Mini App магазина уличной одежды ДРОП: каталог, карточка товара, корзина с промокодом и админка.">
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="device" id="device">
+    <div class="chrome">
+      <div class="status"><span class="status__time">9:41</span><span class="status__icons"></span></div>
+      <div class="chat">
+        <span class="chat__back"></span>
+        <span class="chat__ava logo-c"></span>
+        <span class="chat__name">ДРОП<small>бот</small></span>
+        <span class="chat__more"></span>
+      </div>
+    </div>
+    <div class="sheet" id="sheet">
+      <div class="sheet__head">
+        <i class="sheet__handle"></i>
+        <button class="sheet__close" data-act="close">Закрыть</button>
+        <div class="sheet__title">ДРОП<small id="sheetSub">мини-приложение</small></div>
+        <button class="sheet__more" data-act="menu"></button>
+      </div>
+      <main class="screen" id="screen"></main>
+      <nav class="tabbar" id="tabbar"></nav>
+      <div class="mainbar" id="mainbar"><button class="mainbar__btn" id="mainbtn" data-act="main"></button></div>
+      <i class="home-ind"></i>
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+  <aside class="demo-nav" id="demoNav">
+    <div class="demo-nav__brand"><span class="logo-c"></span><b>ДРОП</b> демо Telegram Mini App</div>
+    <a href="#/">Каталог</a><a href="#/product/runner">Товар</a><a href="#/cart">Корзина</a>
+    <span class="demo-nav__sep">Админка в Telegram</span>
+    <a href="#/admin">Сводка</a><a href="#/admin/orders">Заказы</a><a href="#/admin/product/runner">Товар</a>
+    <span class="demo-nav__sep">Ещё</span>
+    <a href="admin.html">Веб-админка</a><a href="showcase.html">Все экраны</a>
+    <button data-act="reset">Сбросить демо</button>
+  </aside>
+</div>
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
